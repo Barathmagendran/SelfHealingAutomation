@@ -1,0 +1,112 @@
+# ==============================================================
+# framework.yml — Core Framework Configuration
+# ==============================================================
+# Controls platform selection, timeouts, reporting, logging,
+# retry behaviour, parallel execution, and Appium setup.
+#
+# Override any value at runtime:
+#   mvn test -Dplatform=api -Denv=uat
+#
+# Key resolution order (highest wins):
+#   -Dkey=value  >  {env}.properties  >  framework.yml
+# ==============================================================
+
+framework:
+
+  # ── Environment ─────────────────────────────────────────────
+  environment: qa           # qa | uat | prod  (override: -Denv=qa)
+  platform: web             # web | android | ios | api  (override: -Dplatform=web)
+
+  # ── Application URLs ────────────────────────────────────────
+  # These are base defaults; each env overrides them in its own .properties
+  urls:
+    web:  https://yourapp.qa.example.com
+    api:  https://api.qa.example.com
+
+  # ── Timeouts (all values in seconds) ────────────────────────
+  timeouts:
+    implicit:    0       # Keep at 0 — use explicit waits exclusively
+    explicit:    15      # Default WebDriverWait timeout
+    page_load:   30      # Browser page load timeout
+    script:      30      # Async JS execution timeout
+    fluent_poll: 500     # FluentWait polling interval (milliseconds)
+
+  # ── Retry Mechanism ─────────────────────────────────────────
+  retry:
+    count: 1             # Number of retries on failure (0 = disabled)
+    delay_ms: 1000       # Wait between retries in milliseconds
+
+  # ── Reporting ───────────────────────────────────────────────
+  reporting:
+    extent:
+      enabled:    true
+      output:     target/reports/ExtentReport.html
+      title:      Enterprise QA Automation Report
+      name:       Test Execution Report
+      theme:      DARK             # DARK | STANDARD
+      timestamp:  MMM dd, yyyy HH:mm:ss
+    cucumber_html:
+      output_dir: target/reports/cucumber
+    screenshots:
+      on_failure: true
+      output_dir: target/screenshots
+      format:     png
+
+  # ── Logging ─────────────────────────────────────────────────
+  logging:
+    level:       INFO              # TRACE | DEBUG | INFO | WARN | ERROR
+    output_dir:  target/logs
+    max_files:   10
+    max_size_mb: 20
+
+  # ── Parallel Execution ──────────────────────────────────────
+  parallel:
+    enabled:      true
+    thread_count: 2                # Default threads; override: -Dthreads=4
+
+  # ── Test Data ───────────────────────────────────────────────
+  testdata:
+    base_path: src/test/resources/testdata
+    yaml_path: src/test/resources/testdata/yaml
+    json_path: src/test/resources/testdata/json
+    csv_path:  src/test/resources/testdata/csv
+    excel_path: src/test/resources/testdata/excel
+
+  # ── Appium Server ───────────────────────────────────────────
+  appium:
+    server:
+      host: 127.0.0.1
+      port: 4723
+    new_command_timeout: 60        # Seconds before Appium kills idle session
+
+    # Android Capabilities
+    android:
+      platform_version:  "13"
+      device_name:       Android Emulator
+      automation_name:   UIAutomator2
+      app_package:       com.example.app
+      app_activity:      .MainActivity
+      udid:              ""         # Leave blank for emulator
+      app_path:          ""         # Set to .apk path to install fresh
+      auto_grant_permissions: true
+      no_reset:          false
+      full_reset:        false
+
+    # iOS Capabilities
+    ios:
+      platform_version:  "17.0"
+      device_name:       iPhone 15
+      bundle_id:         com.example.app
+      udid:              ""         # Leave blank for simulator
+      app_path:          ""         # Set to .app/.ipa path
+      no_reset:          false
+      auto_accept_alerts: true
+
+  # ── API Framework ───────────────────────────────────────────
+  api:
+    content_type:        application/json
+    auth_type:           bearer      # bearer | basic | none
+    connection_timeout:  10000       # Milliseconds
+    read_timeout:        30000       # Milliseconds
+    log_request:         true
+    log_response:        true

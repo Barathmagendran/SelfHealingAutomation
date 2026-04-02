@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Log4j2 Configuration — Enterprise Test Automation Framework
+  ============================================================
+  Outputs:
+    - Console: colored, human-readable (INFO and above)
+    - File:    full debug log per run (rolling, max 10 files)
+
+  Log level is controlled by the ROOT logger.
+  Set to DEBUG for troubleshooting; INFO for normal runs.
+-->
+
+<Configuration status="WARN" monitorInterval="30">
+
+    <Properties>
+        <!-- Log output directory -->
+        <Property name="LOG_DIR">target/logs</Property>
+        <!-- Log file name with timestamp -->
+        <Property name="LOG_FILE">${LOG_DIR}/automation-${date:yyyy-MM-dd_HH-mm-ss}.log</Property>
+        <!-- Console pattern with color support -->
+        <Property name="CONSOLE_PATTERN">%style{%d{HH:mm:ss.SSS}}{cyan} %highlight{%-5level}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=blue, TRACE=white} %style{[%t]}{magenta} %style{%c{1}}{white} - %msg%n%throwable</Property>
+        <!-- File pattern (no color codes) -->
+        <Property name="FILE_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %c{1.} - %msg%n%throwable</Property>
+    </Properties>
+
+    <Appenders>
+
+        <!-- ===== Console Appender ===== -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}" disableAnsi="false"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <!-- ===== Rolling File Appender ===== -->
+        <RollingFile name="FileAppender"
+                     fileName="${LOG_FILE}"
+                     filePattern="${LOG_DIR}/automation-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!-- ===== Async Appender for performance ===== -->
+        <Async name="AsyncFile" includeLocation="true">
+            <AppenderRef ref="FileAppender"/>
+        </Async>
+
+    </Appenders>
+
+    <Loggers>
+
+        <!-- Reduce noise from third-party libraries -->
+        <Logger name="io.github.bonigarcia"       level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="org.openqa.selenium"         level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="io.appium"                   level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="io.restassured"              level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="org.apache.http"             level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+        <Logger name="com.aventstack"              level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+
+        <!-- Framework loggers — full debug to file -->
+        <Logger name="core"              level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+        <Logger name="web"               level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+        <Logger name="mobile"            level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+        <Logger name="api"               level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+        <Logger name="stepdefinitions"   level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+        <Logger name="hooks"             level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Logger>
+
+        <!-- Root logger — catches everything else -->
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AsyncFile"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

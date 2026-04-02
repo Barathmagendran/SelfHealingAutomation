@@ -1,0 +1,19 @@
+{
+  "validUser_email": "testuser@example.com",
+  "validUser_password": "Password@123",
+
+  "adminUser_email": "admin@example.com",
+  "adminUser_password": "Admin@123",
+
+  "managerUser_email": "manager@example.com",
+  "managerUser_password": "Manager@123",
+
+  "viewerUser_email": "viewer@example.com",
+  "viewerUser_password": "Viewer@123",
+
+  "invalidUser_email": "invalid@example.com",
+  "invalidUser_password": "WrongPass",
+
+  "lockedUser_email": "locked@example.com",
+  "lockedUser_password": "Locked@123"
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Extent Reports — Spark Reporter XML Configuration
+  ==================================================
+  Controls visual appearance and metadata of the HTML report.
+-->
+<extentreports>
+    <configuration>
+
+        <!-- Report metadata -->
+        <documentTitle>Enterprise QA Automation Report</documentTitle>
+        <reportName>Test Execution Report</reportName>
+        <timeStampFormat>MMM dd, yyyy  HH:mm:ss</timeStampFormat>
+        <encoding>UTF-8</encoding>
+
+        <!-- Visual theme: DARK or STANDARD -->
+        <theme>DARK</theme>
+
+        <!-- Inline CSS for logo/header customization -->
+        <css>
+            .nav-logo { content: 'QA Automation'; }
+            .r-img { display: none; }
+        </css>
+
+        <!-- Optional JS hooks (leave blank if unused) -->
+        <js></js>
+
+    </configuration>
+</extentreports>

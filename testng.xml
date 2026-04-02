@@ -1,0 +1,52 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  Enterprise Test Automation Framework — TestNG Suite Configuration
+  ================================================================
+  Controls parallel execution, thread counts, and which runners to include.
+
+  Maven execution examples:
+    mvn test                                    (default: all)
+    mvn test -Dplatform=web -Dtags=@smoke
+    mvn test -Dplatform=api -Dtags=@regression
+    mvn test -P parallel -Dthreads=4
+-->
+
+<suite name="Enterprise Automation Suite"
+       verbose="1"
+       parallel="tests"
+       thread-count="3"
+       data-provider-thread-count="3">
+
+    <!-- ===== LISTENERS ===== -->
+    <listeners>
+        <listener class-name="core.listeners.SuiteListener"/>
+        <listener class-name="core.listeners.RetryListener"/>
+    </listeners>
+
+    <!-- ===== WEB TESTS ===== -->
+    <test name="Web Tests" enabled="true">
+        <parameter name="platform" value="web"/>
+        <classes>
+            <class name="runners.WebTestRunner"/>
+        </classes>
+    </test>
+
+    <!-- ===== API TESTS ===== -->
+    <test name="API Tests" enabled="true">
+        <parameter name="platform" value="api"/>
+        <classes>
+            <class name="runners.ApiTestRunner"/>
+        </classes>
+    </test>
+
+    <!-- ===== MOBILE TESTS ===== -->
+    <!-- Set enabled="true" when Appium server is available -->
+    <test name="Mobile Tests" enabled="false">
+        <parameter name="platform" value="android"/>
+        <classes>
+            <class name="runners.MobileTestRunner"/>
+        </classes>
+    </test>
+
+</suite>

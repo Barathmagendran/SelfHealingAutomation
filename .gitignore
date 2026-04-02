@@ -1,0 +1,31 @@
+# Maven build output
+target/
+!target/.gitkeep
+
+# IDE files
+.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
+*.class
+
+# Logs
+*.log
+logs/
+
+# Screenshots (generated at runtime)
+target/screenshots/
+
+# Reports (generated at runtime)
+target/reports/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit
+src/test/resources/configs/prod.properties
+*.env
+secrets.properties

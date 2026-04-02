@@ -1,0 +1,170 @@
+# ==============================================================
+# browser.yml — Browser & WebDriver Configuration
+# ==============================================================
+# Defines settings for every supported browser.
+# The active browser is selected by:
+#   1. -Dbrowser=firefox  (runtime override — highest priority)
+#   2. framework.yml > framework.browser.active
+#   3. Default: chrome
+#
+# Each browser section has:
+#   - headless:     run without UI (for CI/CD)
+#   - window_size:  initial viewport
+#   - arguments:    extra CLI flags
+#   - preferences:  browser-specific prefs/options
+#   - capabilities: W3C capabilities
+# ==============================================================
+
+browser:
+
+  # ── Active browser selection ─────────────────────────────────
+  # Override at runtime: mvn test -Dbrowser=firefox
+  active: chrome
+
+  # ── Global defaults applied to ALL browsers ──────────────────
+  defaults:
+    headless:          false    # Override: -Dheadless=true
+    window_size:       "1920x1080"
+    page_load_strategy: normal  # normal | eager | none
+    accept_insecure_certs: true
+
+  # ════════════════════════════════════════════════════════════
+  # CHROME
+  # ════════════════════════════════════════════════════════════
+  chrome:
+    headless: false             # Set true for CI/CD or override: -Dheadless=true
+    window_size: "1920x1080"
+
+    arguments:
+      - "--no-sandbox"
+      - "--disable-dev-shm-usage"
+      - "--disable-gpu"
+      - "--disable-extensions"
+      - "--disable-infobars"
+      - "--disable-notifications"
+      - "--disable-popup-blocking"
+      - "--remote-allow-origins=*"
+      - "--ignore-certificate-errors"
+
+    headless_arguments:
+      - "--headless=new"        # Chrome 112+ headless flag
+      - "--no-sandbox"
+      - "--disable-dev-shm-usage"
+      - "--disable-gpu"
+      - "--window-size=1920,1080"
+      - "--remote-allow-origins=*"
+
+    preferences:
+      download.default_directory: "target/downloads"
+      download.prompt_for_download: false
+      credentials_enable_service: false
+      profile.password_manager_enabled: false
+
+    experimental_options:
+      excludeSwitches:
+        - "enable-logging"
+        - "enable-automation"
+      useAutomationExtension: false
+
+    capabilities:
+      acceptInsecureCerts: true
+      pageLoadStrategy: normal
+
+  # ════════════════════════════════════════════════════════════
+  # FIREFOX
+  # ════════════════════════════════════════════════════════════
+  firefox:
+    headless: false
+    window_size: "1920x1080"
+
+    arguments:
+      - "--width=1920"
+      - "--height=1080"
+      - "--disable-gpu"
+
+    headless_arguments:
+      - "--headless"
+      - "--width=1920"
+      - "--height=1080"
+
+    preferences:
+      # Suppress Firefox update prompts in CI
+      "app.update.auto":                          false
+      "app.update.enabled":                       false
+      # Downloads
+      "browser.download.folderList":              2
+      "browser.download.dir":                     "target/downloads"
+      "browser.download.useDownloadDir":          true
+      "browser.helperApps.neverAsk.saveToDisk":   "application/pdf,application/octet-stream"
+      # Suppress notifications
+      "dom.webnotifications.enabled":             false
+      "dom.push.enabled":                         false
+
+    capabilities:
+      acceptInsecureCerts: true
+      pageLoadStrategy: normal
+
+  # ════════════════════════════════════════════════════════════
+  # EDGE (Chromium-based)
+  # ════════════════════════════════════════════════════════════
+  edge:
+    headless: false
+    window_size: "1920x1080"
+
+    arguments:
+      - "--no-sandbox"
+      - "--disable-dev-shm-usage"
+      - "--disable-gpu"
+      - "--disable-extensions"
+      - "--inprivate"
+
+    headless_arguments:
+      - "--headless=new"
+      - "--no-sandbox"
+      - "--window-size=1920,1080"
+
+    capabilities:
+      acceptInsecureCerts: true
+      pageLoadStrategy: normal
+
+  # ════════════════════════════════════════════════════════════
+  # SAFARI (macOS only — no headless support)
+  # ════════════════════════════════════════════════════════════
+  safari:
+    headless: false             # Safari does NOT support headless — always false
+    window_size: "1920x1080"
+
+    capabilities:
+      acceptInsecureCerts: false   # Safari strict mode — cannot override
+      pageLoadStrategy: normal
+
+    notes: >
+      Safari requires 'Allow Remote Automation' enabled in the Develop menu.
+      Run: safaridriver --enable  (once, as admin)
+      Safari cannot run headless — always set headless: false.
+
+  # ════════════════════════════════════════════════════════════
+  # REMOTE / SELENIUM GRID
+  # ════════════════════════════════════════════════════════════
+  remote:
+    enabled: false
+    hub_url: http://localhost:4444/wd/hub
+
+    # Node capabilities for Grid routing
+    capabilities:
+      browserName: chrome
+      platformName: LINUX
+      "se:nodeMaxSessions": 5
+
+  # ════════════════════════════════════════════════════════════
+  # WEBDRIVER MANAGER
+  # ════════════════════════════════════════════════════════════
+  webdriver_manager:
+    # Force a specific driver version (leave blank for auto-latest)
+    chrome_driver_version:  ""
+    firefox_driver_version: ""
+    edge_driver_version:    ""
+    # Cache path for downloaded driver binaries
+    cache_path: ~/.cache/selenium
+    # Use OS proxy for driver downloads if behind corporate firewall
+    proxy: ""

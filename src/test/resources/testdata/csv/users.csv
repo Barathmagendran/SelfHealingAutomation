@@ -1,0 +1,5 @@
+firstName,lastName,email,role,phone
+Alice,Smith,alice.smith@qa.com,admin,+1-555-0101
+Bob,Jones,bob.jones@qa.com,manager,+1-555-0102
+Carol,White,carol.white@qa.com,viewer,+1-555-0103
+David,Brown,david.brown@qa.com,viewer,+1-555-0104

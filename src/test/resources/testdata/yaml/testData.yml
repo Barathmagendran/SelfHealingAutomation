@@ -1,0 +1,312 @@
+# ==============================================================
+# testData.yml — Centralized Test Data
+# ==============================================================
+# Organizes test data by domain (users, api, products, mobile).
+# Each section maps directly to a typed accessor in YamlDataReader.
+#
+# Usage in step definitions:
+#   TestData.users().get("validUser").getEmail()
+#   TestData.api().getBaseHeaders()
+#   TestData.products().get("laptop").getPrice()
+#
+# Sensitive values (passwords, tokens) should be referenced as
+# ${ENV_VAR} placeholders and resolved at runtime via environment
+# variables or a secrets manager in production CI/CD pipelines.
+# ==============================================================
+
+# ──────────────────────────────────────────────────────────────
+# USERS — Login credentials and user profile data
+# ──────────────────────────────────────────────────────────────
+users:
+
+  validUser:
+    firstName:  Test
+    lastName:   User
+    email:      testuser@example.com
+    password:   Password@123
+    role:       viewer
+    phone:      "+1-555-0100"
+
+  adminUser:
+    firstName:  Admin
+    lastName:   Super
+    email:      admin@example.com
+    password:   Admin@123
+    role:       admin
+    phone:      "+1-555-0101"
+
+  managerUser:
+    firstName:  Manager
+    lastName:   Pro
+    email:      manager@example.com
+    password:   Manager@123
+    role:       manager
+    phone:      "+1-555-0102"
+
+  viewerUser:
+    firstName:  Viewer
+    lastName:   Only
+    email:      viewer@example.com
+    password:   Viewer@123
+    role:       viewer
+    phone:      "+1-555-0103"
+
+  lockedUser:
+    firstName:  Locked
+    lastName:   Account
+    email:      locked@example.com
+    password:   Locked@123
+    role:       viewer
+    phone:      "+1-555-0104"
+    isLocked:   true
+
+  invalidUser:
+    email:      notregistered@example.com
+    password:   WrongPassword
+
+  newUserTemplate:
+    firstName:  Automation
+    lastName:   Created
+    email:      auto.created@qa.example.com
+    password:   AutoPass@123
+    role:       viewer
+    phone:      "+1-555-0199"
+
+# ──────────────────────────────────────────────────────────────
+# REGISTRATION — New account creation data
+# ──────────────────────────────────────────────────────────────
+registration:
+
+  validRegistration:
+    firstName:    John
+    lastName:     Doe
+    email:        john.doe.reg@qa.example.com
+    password:     SecurePass@456
+    confirmPassword: SecurePass@456
+    phone:        "+1-555-0200"
+    country:      United States
+    agreeToTerms: true
+
+  duplicateEmail:
+    firstName:    Duplicate
+    lastName:     Attempt
+    email:        admin@example.com       # Already exists → expects 409
+    password:     AnyPass@123
+    confirmPassword: AnyPass@123
+
+  missingRequired:
+    firstName:    ""
+    lastName:     ""
+    email:        ""
+    password:     ""
+
+# ──────────────────────────────────────────────────────────────
+# PRODUCTS — E-commerce product test data
+# ──────────────────────────────────────────────────────────────
+products:
+
+  laptop:
+    id:           1001
+    name:         "ProBook Laptop 15"
+    category:     Electronics
+    price:        1299.99
+    currency:     USD
+    sku:          "PBL-15-2024"
+    inStock:      true
+    quantity:     50
+    description:  "High-performance laptop for professionals"
+    tags:
+      - electronics
+      - laptop
+      - best-seller
+
+  smartphone:
+    id:           1002
+    name:         "SmartPhone X12"
+    category:     Electronics
+    price:        899.00
+    currency:     USD
+    sku:          "SPX-12-2024"
+    inStock:      true
+    quantity:     200
+
+  outOfStockItem:
+    id:           1003
+    name:         "Vintage Camera"
+    category:     Photography
+    price:        450.00
+    currency:     USD
+    sku:          "VC-2024"
+    inStock:      false
+    quantity:     0
+
+# ──────────────────────────────────────────────────────────────
+# ORDERS — Order placement and management data
+# ──────────────────────────────────────────────────────────────
+orders:
+
+  standardOrder:
+    productId:   1001
+    quantity:    2
+    shippingAddress:
+      street:    "123 QA Boulevard"
+      city:      "Test City"
+      state:     "CA"
+      zipCode:   "90210"
+      country:   "US"
+    paymentMethod: credit_card
+    promoCode:   ""
+
+  bulkOrder:
+    productId:   1002
+    quantity:    10
+    shippingAddress:
+      street:    "456 Automation Ave"
+      city:      "Dev Town"
+      state:     "NY"
+      zipCode:   "10001"
+      country:   "US"
+    paymentMethod: paypal
+
+# ──────────────────────────────────────────────────────────────
+# API — REST API test data and request payloads
+# ──────────────────────────────────────────────────────────────
+api:
+
+  auth:
+    validCredentials:
+      email:    admin@example.com
+      password: Admin@123
+    invalidCredentials:
+      email:    wrong@example.com
+      password: WrongPass
+
+  headers:
+    default:
+      Content-Type:  application/json
+      Accept:        application/json
+    withAuth:
+      Content-Type:  application/json
+      Accept:        application/json
+      Authorization: "Bearer {token}"     # {token} replaced at runtime
+
+  userPayloads:
+
+    createValid:
+      firstName:  ApiCreated
+      lastName:   User
+      email:      api.created@qa.example.com
+      role:       viewer
+      phone:      "+1-555-0300"
+
+    createAdmin:
+      firstName:  ApiAdmin
+      lastName:   User
+      email:      api.admin@qa.example.com
+      role:       admin
+      phone:      "+1-555-0301"
+
+    updatePayload:
+      firstName:  UpdatedFirst
+      lastName:   UpdatedLast
+      phone:      "+1-555-0399"
+
+    duplicateEmail:
+      firstName:  Duplicate
+      lastName:   ApiUser
+      email:      admin@example.com       # Existing email → 409
+      role:       viewer
+
+  expectedResponses:
+    userListMinSize:   1
+    createStatusCode:  201
+    getStatusCode:     200
+    deleteStatusCode:  204
+    notFoundCode:      404
+    conflictCode:      409
+    unauthorizedCode:  401
+    maxResponseTimeMs: 3000
+
+# ──────────────────────────────────────────────────────────────
+# MOBILE — Mobile app test data (Appium)
+# ──────────────────────────────────────────────────────────────
+mobile:
+
+  loginScreen:
+    validUser:
+      username: mobileuser
+      password: Mobile@123
+
+    invalidUser:
+      username: mobileuser
+      password: WrongPass
+
+    lockedUser:
+      username: lockedmobile
+      password: Locked@123
+
+  onboarding:
+    newUser:
+      name:     Mobile Tester
+      email:    mobiletester@example.com
+      password: MobileTest@123
+
+  searchKeywords:
+    valid:      - "laptop"
+                - "phone"
+                - "tablet"
+    noResults:  "xyznonexistent12345"
+
+# ──────────────────────────────────────────────────────────────
+# SEARCH & FILTERS — Search functionality test data
+# ──────────────────────────────────────────────────────────────
+search:
+
+  validKeywords:
+    - "laptop"
+    - "smartphone"
+    - "tablet"
+    - "headphones"
+
+  emptyResultKeyword:   "xyznonexistentproduct99999"
+
+  filters:
+    priceRange:
+      min:  100
+      max:  2000
+    category:   Electronics
+    inStockOnly: true
+    sortBy:      price_asc    # price_asc | price_desc | newest | rating
+
+# ──────────────────────────────────────────────────────────────
+# FORM VALIDATION — Edge cases and boundary values
+# ──────────────────────────────────────────────────────────────
+validation:
+
+  email:
+    valid:
+      - "user@example.com"
+      - "user.name+tag@example.co.uk"
+      - "user123@sub.domain.com"
+    invalid:
+      - "notanemail"
+      - "@nodomain.com"
+      - "missing@"
+      - "spaces in@email.com"
+
+  password:
+    strong:     "Str0ng!Pass#2024"
+    weak:       "pass"
+    noUpper:    "password123!"
+    noNumber:   "Password!!"
+    noSpecial:  "Password123"
+    tooShort:   "Ab1!"
+
+  phoneNumbers:
+    valid:
+      - "+1-555-0100"
+      - "+44 20 7946 0958"
+      - "555-0100"
+    invalid:
+      - "notaphone"
+      - "000-000-0000"
