@@ -49,7 +49,10 @@ public class HealingConfig {
     /** Anthropic API key — loaded from the {@code ANTHROPIC_API_KEY} env variable. */
     public static String getApiKey() {
         String key = System.getenv("ANTHROPIC_API_KEY");
-        return null;
+        if (key == null || key.isBlank()) {
+            log.warn("[Healer] ANTHROPIC_API_KEY env variable is not set — healing will be skipped.");
+        }
+        return key;
     }
 
     /** Claude model to use for diagnosis and code generation. */
